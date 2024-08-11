@@ -3,6 +3,7 @@ pipeline {
     environment {
         VM_IP = '172.16.62.133'
         SSH_CREDENTIALS = 'jenkins-key'
+        SSH_USER= 'esraa'
         BACKEND_DIR = '/opt/app/backend/'
         FRONTEND_DIR = '/var/www/html/'
     }

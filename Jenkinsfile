@@ -59,7 +59,7 @@ pipeline {
                 script {
                     sshagent([SSH_CREDENTIALS]) {
                         // Copy React build files to the server
-                        sh "scp -r crud-example-frontend/build/* ${SSH_USER}@${VM_IP}:${FRONTEND_DIR}"
+                        sh "scp -r crud-example-frontend/dist/* ${SSH_USER}@${VM_IP}:${FRONTEND_DIR}"
 
                         // Restart Nginx to serve the new build
                         sh "ssh ${SSH_USER}@${VM_IP} 'sudo systemctl restart nginx'"

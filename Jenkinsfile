@@ -33,37 +33,35 @@ pipeline {
                 }
             }
         }
-    stage('Deploy Spring Boot') {
-        steps {
-            script {
-                sshagent(['jenkins-key']) {
-                    // Ensure the backend directory exists on the remote server
-                    sh """
-                    ssh ${SSH_USER}@${VM_IP} '
-                        mkdir -p ${BACKEND_DIR}
-                    '
-                    """
+        stage('Deploy Spring Boot') {  // Moved this inside the stages block
+            steps {
+                script {
+                    sshagent([SSH_CREDENTIALS]) {  // Used SSH_CREDENTIALS instead of hardcoding the key
+                        // Ensure the backend directory exists on the remote server
+                        sh """
+                        ssh ${SSH_USER}@${VM_IP} '
+                            mkdir -p ${BACKEND_DIR}
+                        '
+                        """
 
-                    // Copy the JAR file to the remote server
-                    sh "scp crud-example-backend/target/*.jar ${SSH_USER}@${VM_IP}:${BACKEND_DIR}"
+                        // Copy the JAR file to the remote server
+                        sh "scp crud-example-backend/target/*.jar ${SSH_USER}@${VM_IP}:${BACKEND_DIR}"
 
-                    // Stop the currently running Spring Boot application (if any) and start the new one
-                    sh """
-                    ssh ${SSH_USER}@${VM_IP} '
-                        pkill -f "java -jar ${BACKEND_DIR}*.jar" || true
-                        nohup java -jar ${BACKEND_DIR}*.jar > /dev/null 2>&1 &
-                    '
-                    """
+                        // Stop the currently running Spring Boot application (if any) and start the new one
+                        sh """
+                        ssh ${SSH_USER}@${VM_IP} '
+                            pkill -f "java -jar ${BACKEND_DIR}*.jar" || true
+                            nohup java -jar ${BACKEND_DIR}*.jar > /dev/null 2>&1 &
+                        '
+                        """
+                    }
+                }
             }
-        }
-    }
-}
-
         }
         stage('Deploy React App') {
             steps {
                 script {
-                    sshagent([ 'jenkins-key']) {
+                    sshagent([SSH_CREDENTIALS]) {
                         // Copy React build files to the server
                         sh "scp -r crud-example-frontend/build/* ${SSH_USER}@${VM_IP}:${FRONTEND_DIR}"
 

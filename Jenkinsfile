@@ -3,8 +3,8 @@ pipeline {
     environment {
         VM_IP = '172.16.62.133'
         SSH_CREDENTIALS = 'jenkins-key'
-        SSH_USER= 'esraa'
-        BACKEND_DIR = '/opt/app/backend/'
+        SSH_USER = 'esraa'
+        BACKEND_DIR = '/opt/app/'
         FRONTEND_DIR = '/var/www/html/'
     }
     tools {
@@ -33,17 +33,10 @@ pipeline {
                 }
             }
         }
-        stage('Deploy Spring Boot') {  // Moved this inside the stages block
+        stage('Deploy Spring Boot') {
             steps {
                 script {
-                    sshagent([SSH_CREDENTIALS]) {  // Used SSH_CREDENTIALS instead of hardcoding the key
-                        // Ensure the backend directory exists on the remote server
-                        sh """
-                        ssh ${SSH_USER}@${VM_IP} '
-                            mkdir -p ${BACKEND_DIR}
-                        '
-                        """
-
+                    sshagent([SSH_CREDENTIALS]) {
                         // Copy the JAR file to the remote server
                         sh "scp crud-example-backend/target/*.jar ${SSH_USER}@${VM_IP}:${BACKEND_DIR}"
 
@@ -66,7 +59,7 @@ pipeline {
                         sh "scp -r crud-example-frontend/build/* ${SSH_USER}@${VM_IP}:${FRONTEND_DIR}"
 
                         // Restart Nginx to serve the new build
-                        sh "ssh ${SSH_USER}@${VM_IP} 'sudo systemctl restart nginx'"
+                        //sh "ssh ${SSH_USER}@${VM_IP} 'sudo systemctl restart nginx'"
                     }
                 }
             }

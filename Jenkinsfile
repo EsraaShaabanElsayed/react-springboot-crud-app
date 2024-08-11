@@ -6,6 +6,7 @@ pipeline {
         SSH_USER = 'esraa'
         BACKEND_DIR = '/opt/app/'
         FRONTEND_DIR = '/var/www/html/'
+        VERSION = '0.0.1-SNAPSHOT'  // Define the version here
     }
     tools {
         nodejs "node"
@@ -37,14 +38,14 @@ pipeline {
             steps {
                 script {
                     sshagent([SSH_CREDENTIALS]) {
-                        // Copy the JAR file to the remote server
-                        sh "scp crud-example-backend/target/*.jar ${SSH_USER}@${VM_IP}:${BACKEND_DIR}"
+                        // Use environment variable for versioning in the SCP command
+                        sh "scp crud-example-backend/target/crud-example-${VERSION}.jar ${SSH_USER}@${VM_IP}:${BACKEND_DIR}crud-example-${VERSION}.jar"
 
                         // Stop the currently running Spring Boot application (if any) and start the new one
                         sh """
                         ssh ${SSH_USER}@${VM_IP} '
-                            pkill -f "java -jar ${BACKEND_DIR}*.jar" || true
-                            nohup java -jar ${BACKEND_DIR}*.jar > /dev/null 2>&1 &
+                            pkill -f "java -jar ${BACKEND_DIR}crud-example-${VERSION}.jar" || true
+                            nohup java -jar ${BACKEND_DIR}crud-example-${VERSION}.jar > /dev/null 2>&1 &
                         '
                         """
                     }
@@ -59,7 +60,7 @@ pipeline {
                         sh "scp -r crud-example-frontend/build/* ${SSH_USER}@${VM_IP}:${FRONTEND_DIR}"
 
                         // Restart Nginx to serve the new build
-                        //sh "ssh ${SSH_USER}@${VM_IP} 'sudo systemctl restart nginx'"
+                        sh "ssh ${SSH_USER}@${VM_IP} 'sudo systemctl restart nginx'"
                     }
                 }
             }

@@ -33,23 +33,32 @@ pipeline {
                 }
             }
         }
-        stage('Deploy Spring Boot') {
-            steps {
-                script {
-                    sshagent([ 'jenkins-key']) {
-                        // Copy the JAR file to the remote server
-                        sh "scp crud-example-backend/target/*.jar ${SSH_USER}@${VM_IP}:${BACKEND_DIR}"
+    stage('Deploy Spring Boot') {
+        steps {
+            script {
+                sshagent(['jenkins-key']) {
+                    // Ensure the backend directory exists on the remote server
+                    sh """
+                    ssh ${SSH_USER}@${VM_IP} '
+                        mkdir -p ${BACKEND_DIR}
+                    '
+                    """
 
-                        // Stop the currently running Spring Boot application (if any) and start the new one
-                        sh """
-                        ssh ${SSH_USER}@${VM_IP} '
-                            pkill -f "java -jar ${BACKEND_DIR}*.jar" || true
-                            java -jar ${BACKEND_DIR}*.jar > /dev/null 2>&1 &
-                        '
-                        """
-                    }
-                }
+                    // Copy the JAR file to the remote server
+                    sh "scp crud-example-backend/target/*.jar ${SSH_USER}@${VM_IP}:${BACKEND_DIR}"
+
+                    // Stop the currently running Spring Boot application (if any) and start the new one
+                    sh """
+                    ssh ${SSH_USER}@${VM_IP} '
+                        pkill -f "java -jar ${BACKEND_DIR}*.jar" || true
+                        nohup java -jar ${BACKEND_DIR}*.jar > /dev/null 2>&1 &
+                    '
+                    """
             }
+        }
+    }
+}
+
         }
         stage('Deploy React App') {
             steps {

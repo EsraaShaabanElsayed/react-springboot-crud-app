@@ -6,12 +6,12 @@ const initialState = {
 };
 
 export const getUsers = createAsyncThunk("getUsers", async () => {
-  const response = await axios.get("http://localhost:8085/api/users");
+  const response = await axios.get("http://localhost:8086/api/users");
   return response.data;
 });
 
 export const createUserSlice = createAsyncThunk("createUser", async (user) => {
-  const response = await axios.post(`http://localhost:8085/api/users`, user, {
+  const response = await axios.post(`http://localhost:8086/api/users`, user, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -21,14 +21,14 @@ export const createUserSlice = createAsyncThunk("createUser", async (user) => {
 
 export const searchUsers = createAsyncThunk("searchUsers", async (text) => {
   const response = await axios.get(
-    `http://localhost:8085/api/users/search?text=${text}`,
+    `http://localhost:8086/api/users/search?text=${text}`,
   );
   return response.data;
 })
 
 export const updateUserSlice = createAsyncThunk("updateUser", async (user) => {
   const response = await axios.post(
-    `http://localhost:8085/api/users/update/${user.username}`,
+    `http://localhost:8086/api/users/update/${user.username}`,
     user,
     {
       headers: {
@@ -41,7 +41,7 @@ export const updateUserSlice = createAsyncThunk("updateUser", async (user) => {
 
 export const deleteUser = createAsyncThunk("deleteUser", async (username) => {
   const response = await axios.delete(
-    `http://localhost:8085/api/users/delete/${username}`
+    `http://localhost:8086/api/users/delete/${username}`
   );
   return response.data;
 });

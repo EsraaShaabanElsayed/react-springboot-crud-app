@@ -41,8 +41,7 @@ public class UserController {
 
     //UPDATE
     @PostMapping("/update/{username}")
-    public ResponseEntity<UserRequestResponseDto> updateUser(@PathVariable String username,
-                                                             @RequestBody UserRequestResponseDto userRequest) {
+    public ResponseEntity<UserRequestResponseDto> updateUser(@PathVariable String username, @RequestBody UserRequestResponseDto userRequest) {
         return new ResponseEntity<>(userService.updateUser(username, userRequest), HttpStatus.OK);
     }
 

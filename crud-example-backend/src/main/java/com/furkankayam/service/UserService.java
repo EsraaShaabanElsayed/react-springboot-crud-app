@@ -54,8 +54,7 @@ public class UserService {
     }
 
     //UPDATE
-    public UserRequestResponseDto updateUser(String username,
-                                             UserRequestResponseDto userRequest) {
+    public UserRequestResponseDto updateUser(String username,UserRequestResponseDto userRequest) {
         User user = isThereUser(username);
         user.setFirstName(userRequest.firstName());
         user.setLastName(userRequest.lastName());

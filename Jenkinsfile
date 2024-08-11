@@ -11,7 +11,6 @@ pipeline {
     tools {
         nodejs "node"
     }
-
     stages {
         stage('Checkout') {
             steps {
@@ -38,14 +37,23 @@ pipeline {
             steps {
                 script {
                     sshagent([SSH_CREDENTIALS]) {
-                        // Use environment variable for versioning in the SCP command
-                        sh "scp crud-example-backend/target/crud-example-${VERSION}.jar ${SSH_USER}@${VM_IP}:${BACKEND_DIR}crud-example-${VERSION}.jar"
+                        // Copy the JAR file to the remote server
+                        sh "scp crud-example-backend/target/crud-example-${VERSION}.jar ${SSH_USER}@${VM_IP}:${BACKEND_DIR}"
 
-                        // Stop the currently running Spring Boot application (if any) and start the new one
+                        // Ensure the JAR file is executable and start it
                         sh """
                         ssh ${SSH_USER}@${VM_IP} '
+                            # Make sure the JAR file is executable
+                            chmod +x ${BACKEND_DIR}crud-example-${VERSION}.jar
+                            
+                            # Stop the currently running Spring Boot application (if any)
                             pkill -f "java -jar ${BACKEND_DIR}crud-example-${VERSION}.jar" || true
-                            nohup java -jar ${BACKEND_DIR}crud-example-${VERSION}.jar > /dev/null 2>&1 &
+                            
+                            # Start the new application
+                            nohup java -jar ${BACKEND_DIR}crud-example-${VERSION}.jar > ${BACKEND_DIR}app.log 2>&1 &
+                            
+                            # Verify the application is running
+                            ps aux | grep java
                         '
                         """
                     }
@@ -66,7 +74,6 @@ pipeline {
             }
         }
     }
-
     post {
         always {
             cleanWs()

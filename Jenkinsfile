@@ -19,6 +19,7 @@ pipeline {
         stage('Build Spring Boot') {
             steps {
                 dir('crud-example-backend') {
+                    sh 'chmod +x mvnw'
                     sh './mvnw clean package'
                 }
             }

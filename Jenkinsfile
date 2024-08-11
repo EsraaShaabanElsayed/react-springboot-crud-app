@@ -46,14 +46,8 @@ pipeline {
                             # Make sure the JAR file is executable
                             chmod +x ${BACKEND_DIR}crud-example-${VERSION}.jar
                             
-                            # Stop the currently running Spring Boot application (if any)
-                            pkill -f "java -jar ${BACKEND_DIR}crud-example-${VERSION}.jar" || true
-                            
                             # Start the new application
                             nohup java -jar ${BACKEND_DIR}crud-example-${VERSION}.jar > ${BACKEND_DIR}app.log 2>&1 &
-                            
-                            # Verify the application is running
-                            ps aux | grep java
                         '
                         """
                     }

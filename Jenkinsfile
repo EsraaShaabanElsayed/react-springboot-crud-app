@@ -5,7 +5,7 @@ pipeline {
         SSH_CREDENTIALS = 'jenkins-key'
         SSH_USER = 'esraa'
         BACKEND_DIR = '/opt/app/'
-        FRONTEND_DIR = '/var/www/html/'
+        FRONTEND_DIR = '/var/www/html/crud-app'
         VERSION = '0.0.1-SNAPSHOT'  // Define the version here
     }
     tools {

@@ -1,7 +1,3 @@
-Here’s the updated README with the new information included:
-
----
-
 # React-SpringBoot-CRUD-App
 
 This repository hosts a CRUD application built with React for the frontend and Spring Boot for the backend. The application is hosted using Nginx, showcasing skills in continuous integration and continuous deployment (CI/CD) with Jenkins.
@@ -81,6 +77,3 @@ This pipeline ensures consistent building and deployment, enhancing efficiency a
    - Set up PostgreSQL for backend data storage.
    - Ensure the Spring Boot application is configured to connect to the PostgreSQL database.
 
----
-
-This update includes the PostgreSQL configuration and provides a clear overview of the setup and deployment process.
